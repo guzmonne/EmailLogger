@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+
+<link rel="stylesheet" href="./bootstrap.min.css">
+<link rel="stylesheet" href="./jumbotron-narrow.css">
+
+<title>Bienvenido a SODIMAC</title>
+
+<script>
+function submitAction(){
+  var link         = document.location.href;
+  var searchString = "redirect=";
+  var equalIndex   = link.indexOf(searchString);
+  var redirectUrl  = "";
+
+  var email        = document.getElementsByName("email")[0].value
+  var xmlhttp      = new XMLHttpRequest();
+  if (email === "") return alert('Debe ingresar una cuenta de correo para continuar.');
+  if (!validateEmail(email)) return alert('La dirección correo ingresada no es valida');
+
+  if (document.forms[0].action == "") {
+  var url   = window.location.href;
+  var args  = new Object();
+  var query = location.search.substring(1);
+  var pairs = query.split("&");
+      for(var i=0;i<pairs.length;i++){
+        var pos = pairs[i].indexOf('=');
+        if(pos == -1) continue;
+        var argname   = pairs[i].substring(0,pos);
+        var value     = pairs[i].substring(pos+1);
+        args[argname] = unescape(value);
+      }
+      document.forms[0].action = args.switch_url;
+  }
+  if(equalIndex >= 0) {
+        equalIndex  += searchString.length;
+        redirectUrl =  "";
+        redirectUrl += link.substring(equalIndex);
+  }
+  if(redirectUrl.length > 255)
+  redirectUrl = redirectUrl.substring(0,255);
+  document.forms[0].redirect_url.value  = redirectUrl;
+  document.forms[0].buttonClicked.value = 4;
+
+  xmlhttp.onreadystatechange = function(){
+    if (xmlhttp.readyState == 2){
+      document.forms[0].submit();
+    }
+  }
+
+  xmlhttp.open("POST","//104.131.148.108/", true);
+  xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlhttp.send("email=" + email);
+}
+
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+
+function reject()
+{
+  alert("You will not be able to access the system!");
+}
+
+
+function loadAction(){
+  var url = window.location.href;
+  var args = new Object();
+  var query = location.search.substring(1);
+  var pairs = query.split("&");
+  for(var i=0;i<pairs.length;i++){
+      var pos = pairs[i].indexOf('=');
+      if(pos == -1) continue;
+      var argname = pairs[i].substring(0,pos);
+      var value = pairs[i].substring(pos+1);
+      args[argname] = unescape(value);
+  }
+  document.forms[0].action = args.switch_url;
+}
+
+</script>
+
+</head>
+
+<body onload="loadAction();">
+
+  <div class="conatiner">
+    <div class="header clearfix">
+      <nav>
+        <ul class="nav nav-pills pull-right">
+          <li role="presentation" class="active">
+            <a href="javascript:void(0);">Home</a>
+          </li>
+          <li role="presentation">
+            <a href="javascript:void(0);">Terminos de Servicio</a>
+          </li>
+        </ul>
+      </nav>
+      <img src="./sodimac-logo.png" width="50px" alt="Logo SODIMAC">
+    </div>
+
+    <div class="jumbotron">
+      <h1>Bienvenido a SODIMAC</h1>
+      <p>Ingrese sus datos para comenzar a navegar</p>
+    </div>
+
+    <div class="col-lg-offset-2 col-lg-7">
+
+      <form method="post" class="form-horizontal">
+        <input TYPE="hidden" NAME="buttonClicked" SIZE="16" MAXLENGTH="15" value="0">
+        <input TYPE="hidden" NAME="redirect_url" SIZE="255" MAXLENGTH="255" VALUE="">
+        <input TYPE="hidden" NAME="err_flag" SIZE="16" MAXLENGTH="15" value="0">
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="email" placeholder="Email" required>
+          </div>
+        </div>
+
+        <!--
+        <div class="form-gropup" style="height: 120px">
+          <iframe src="./aup.html" class="col-sm-offset-2 col-sm-10" scrolling="auto" height="120"></iframe>
+        </div>
+        --> 
+        <hr>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="button" name="Submit" value="Aceptar" class="btn btn-success" onclick="submitAction();">
+            <input type="button" name="Reject" value="Rechazar" class="btn btn-danger" onclick="reject();">
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</body>
+
+</html>
