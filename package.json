@@ -1,3 +1,4 @@
 {
-  author: 'Guzman Monne'
+  "author"  : "Guzman Monne",
+  "version" : "1.0.0"
 }
