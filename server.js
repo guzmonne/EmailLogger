@@ -31,9 +31,19 @@ server.use(restify.bodyParser());
 server.post('/', function(req, res, next){
   var email = processEmail(req.params.email);
   if (!email) return res.send(500);
-  fs.appendFile(emails, email + '\n', function(err){
-    if (err) handleError(err, res);
-    res.send(200);
+  //console.log(email);
+  fs.readFile(emails, 'utf8', function(err, data){
+    if (err) return res.send(500);
+    //console.log('reading data');
+    if (data.search(email) > 0) {
+      console.log('Email already exists!');
+      return res.send(500);
+    }
+    fs.appendFile(emails, email + '\n', function(err){
+      if (err) handleError(err, res);
+      console.log('New email %s', email);
+      res.send(200);
+    });
   });
 });
 /**
@@ -42,7 +52,7 @@ server.post('/', function(req, res, next){
  * @return {String o False}
  */
 function processEmail(email){
-  if (emailIsNotEmpty(email) && emailIsString(email) && emailIsValid(email) && emailIsUnique(email)){
+  if (emailIsNotEmpty(email) && emailIsString(email) && emailIsValid(email)){
     return email.toLowerCase();
   }
   return false;
@@ -51,7 +61,7 @@ function processEmail(email){
  * Verífica que exista o este definido el email
  * @return {[type]}
  */
-function emailIsNotEmpty(){
+function emailIsNotEmpty(email){
   if (!email || email === ''){
     console.log('Email is undefined or empty');
     return false;
@@ -62,8 +72,8 @@ function emailIsNotEmpty(){
  * Verifica que el valor del email sea un string
  * @return {String}
  */
-function emailIsString(){
-  if (!(typeof email = 'string')){
+function emailIsString(email){
+  if (!(typeof email === 'string')){
     console.log('Email value must be a string');
     return false;
   }
@@ -84,14 +94,15 @@ function emailIsValid(email){
  * @return {Boolean}
  */
 function emailIsUnique(email){
-  fs.readFile(emails, function(err, data){
+  fs.readFile(emails, 'utf8', function(err, data){
     if (err) return false;
-    if (data.indexOf(email.toLowerCase()) < 0) {
+    console.log(data);
+    if (data.search(email.toLowerCase()) < 0) {
       console.log('Email already exists');
       return false;
     }
+    return true;
   });
-  return true;
 }
 /**
  * Función encargada de registrar el error y enviar un mensaje 500 al cliente

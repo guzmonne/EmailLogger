@@ -1,4 +1,7 @@
 {
-  "author"  : "Guzman Monne",
-  "version" : "1.0.0"
+  "author": "Guzman Monne",
+  "version": "1.0.0",
+  "dependencies": {
+    "restify": "^3.0.2"
+  }
 }
